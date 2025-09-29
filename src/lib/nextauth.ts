@@ -16,7 +16,43 @@ declare module "next-auth/jwt"{
         id: string;
     }
 }
-export const authOptions : NextAuthOptions = {
+// export const authOptions : NextAuthOptions = {
+//     session:{
+//         strategy:"jwt"
+//     },
+//     callbacks:{
+//         jwt: async ({token})=>{
+//             const db_user = await prisma.user.findFirst({
+//                 where:{
+//                     email: token?.email
+//                 }
+//             })
+//             if(db_user){
+//                 token.id = db_user.id;
+//             }
+//             return token;
+//         },
+//         session: ({session, token})=>{
+//             if(token){
+//                 session.user.id = token.id as string;
+//                 session.user.name = token.name as string;
+//                 session.user.email = token.email as string;
+//                 session.user.image = token.image as string;
+//             }
+//             return session;
+//         }
+//     },
+//     secret: process.env.NEXTAUTH_SECRET,
+//     adapter: PrismaAdapter(prisma), 
+//     providers:[
+//         GoogleProvider({
+//             clientId: process.env.GOOGLE_CLIENT_ID as string,
+//             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
+//         })
+//     ]
+// }
+
+export const authOptions: NextAuthOptions = {
     session:{
         strategy:"jwt"
     },
@@ -28,9 +64,9 @@ export const authOptions : NextAuthOptions = {
                 }
             })
             if(db_user){
-                token.id = db_user.id;
-            }
-            return token;
+            token.id = db_user.id;
+        }
+        return token;
         },
         session: ({session, token})=>{
             if(token){
@@ -41,9 +77,10 @@ export const authOptions : NextAuthOptions = {
             }
             return session;
         }
+        
     },
-    secret: process.env.NEXT_AUTH_SECRET,
-    adapter: PrismaAdapter(prisma), 
+    secret: process.env.NEXTAUTH_SECRET,
+    adapter:PrismaAdapter(prisma),
     providers:[
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -51,7 +88,6 @@ export const authOptions : NextAuthOptions = {
         })
     ]
 }
-
 
 export const getAuthSession = ()=>{
     return getServerSession(authOptions);
