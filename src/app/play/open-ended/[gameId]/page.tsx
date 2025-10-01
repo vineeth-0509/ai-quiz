@@ -1,14 +1,14 @@
+import OpenEnded from "@/components/OpenEnded";
 import { prisma } from "@/lib/db";
 import { getAuthSession } from "@/lib/nextauth";
 import { redirect } from "next/navigation";
-import React from "react";
 
 type Props = {
   params: {
     gameId: string;
   };
 };
-const page = async ({ params: { gameId } }: Props) => {
+const OpenEndedPage = async ({ params: { gameId } }: Props) => {
   const session = await getAuthSession();
   if (!session?.user) {
     return redirect("/");
@@ -17,12 +17,20 @@ const page = async ({ params: { gameId } }: Props) => {
     where: {
       id: gameId,
     },
-    include:{
-        questions: true
-    }
+    include: {
+      questions: {
+        select: {
+          id: true,
+          question: true,
+          answer: true,
+        },
+      },
+    },
   });
-  console.log(game);
-  return <pre>{JSON.stringify(game, null, 2)}</pre>;
+  if (!game || game.gameType !== "open_ended") {
+    return redirect("/");
+  }
+  return <OpenEnded game={game} />;
 };
 
-export default page;
+export default OpenEndedPage;
