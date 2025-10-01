@@ -1,6 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({}); 
+const ai = new GoogleGenAI({});
 
 interface OutputFormat {
   [key: string]: string | string[] | OutputFormat;
@@ -24,7 +24,6 @@ export async function strict_output(
   let error_msg = "";
 
   for (let attempt = 0; attempt < num_tries; attempt++) {
-   
     let output_format_prompt = `\nYou are to output the following in json format: ${JSON.stringify(
       output_format
     )}. Do not put extra quotation marks or escape characters in the output fields.`;
@@ -45,11 +44,15 @@ export async function strict_output(
     const userContent = Array.isArray(user_prompt)
       ? user_prompt.join("\n")
       : user_prompt.toString();
-    const finalPrompt = system_prompt + output_format_prompt + error_msg + "\n" + userContent;
+    const finalPrompt =
+      system_prompt + output_format_prompt + error_msg + "\n" + userContent;
 
     if (verbose) {
       console.log("=== strict_output: attempt", attempt + 1);
-      console.log("System + format prompt:", system_prompt + output_format_prompt + error_msg);
+      console.log(
+        "System + format prompt:",
+        system_prompt + output_format_prompt + error_msg
+      );
       console.log("User prompt:", userContent);
     }
 
@@ -69,10 +72,15 @@ export async function strict_output(
         (typeof response === "string" ? response : JSON.stringify(response));
 
       // normalize quotes a bit (same approach as your original)
+      // res = res.replace(/'/g, '"');
+      // // try not to convert intra-word quotes
+      // res = res.replace(/(\w)"(\w)/g, "$1'$2");
+      res = res
+        .replace(/```json/g, "")
+        .replace(/```/g, "")
+        .trim();
       res = res.replace(/'/g, '"');
-      // try not to convert intra-word quotes
       res = res.replace(/(\w)"(\w)/g, "$1'$2");
-
       if (verbose) {
         console.log("Gemini raw response:", res);
       }
@@ -142,7 +150,8 @@ export async function strict_output(
         // include the last raw snippet if available (best-effort)
         try {
           const lastRaw = (err as any).responseText ?? "";
-          if (lastRaw) error_msg += `Last response snippet: ${String(lastRaw)}\n\n`;
+          if (lastRaw)
+            error_msg += `Last response snippet: ${String(lastRaw)}\n\n`;
         } catch {}
       }
       console.warn("strict_output attempt failed:", err);

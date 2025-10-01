@@ -55,7 +55,7 @@ export async function POST(req: Request, res: Response) {
           answer: question.answer,
           options: JSON.stringify(options),
           gameId: game.id,
-          quesitonType: "mcq",
+          questionType: "mcq",
         };
       });
       await prisma.question.createMany({
