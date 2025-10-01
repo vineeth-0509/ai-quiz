@@ -26,7 +26,7 @@ const UserAccountNav = ({ user }: Props) => {
           <UserAvatar user={user} />
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent  align="end">
+      <DropdownMenuContent align="end">
         <div className="flex items-center gap-2 p-2">
           <div className="flex flex-col space-y-1 leading-none">
             {user.name && <p className="font-medium">{user.name}</p>}
@@ -40,7 +40,7 @@ const UserAccountNav = ({ user }: Props) => {
 
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/">Meow</Link>
+          <Link href="/">AI-Quiz</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
